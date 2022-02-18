@@ -1,13 +1,12 @@
 import pandas as pd
 import numpy as np
-# from talib.abstract import *
 import matplotlib.pyplot as plt
 import sys
 
 #local imports
 from gemini_modules import engine
 
-#reads in crypto data
+#reads in price data
 df = pd.read_csv("data/USDT_BTC.csv",parse_dates=[0])
 
 #globals
