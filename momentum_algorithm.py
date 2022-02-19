@@ -1,8 +1,8 @@
 import pandas as pd
-# from talib.abstract import *
+# import API_Interface as api
 
 # local imports
-from gemini_modules import engine
+from backtester import engine
 
 # read in data preserving dates
 df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])

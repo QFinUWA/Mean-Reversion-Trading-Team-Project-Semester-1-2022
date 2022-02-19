@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import sys
 
 #local imports
-from gemini_modules import engine
+from backtester import engine
 
 #reads in price data
 df = pd.read_csv("data/USDT_BTC.csv",parse_dates=[0])
