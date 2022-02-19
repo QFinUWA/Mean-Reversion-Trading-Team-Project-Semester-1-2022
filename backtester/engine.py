@@ -42,10 +42,16 @@ class backtest():
         self.account = account.Account(initial_capital)
         
         # Enter backtest ---------------------------------------------  
-        for index, today in self.data.iterrows():
-    
-            date = today['date']
-            equity = self.account.total_value(today['close'])
+        starttime = time.time()
+        # for index, today in self.data.iterrows():
+        # print(self.data)
+        
+        for (_,date,low,high,open,close,volume) in self.data.itertuples():
+            # print(date,low,high,open,close,volume)
+            
+            # date = today['date']
+            equity = self.account.total_value(close)
+            # equity = self.account.total_value(today['close'])
 
             # Handle stop loss
             # for p in self.account.positions:
@@ -64,15 +70,19 @@ class backtest():
 
             # Equity tracking
             self.tracker.append({'date': date, 
-                                 'benchmark_equity' : today['close'],
+                                 'benchmark_equity' : close,
+                                # 'benchmark_equity' : today['close'],
                                  'strategy_equity' : equity})
 
             # Execute trading logic
-            lookback = self.data[0:index+1]
+            lookback = self.data[0:_+1]
+            # lookback = self.data[0:index+1]
+
             logic(self.account, lookback)
 
             # Cleanup empty positions
             self.account.purge_positions()
+        print("Backtest completed in {0} seconds".format(time.time() - starttime))
             
         # ------------------------------------------------------------
 
@@ -118,16 +128,16 @@ class backtest():
         :type show_trades: bool
         :param title: Plot title
         :type title: str
-        """     
+        """
         bokeh.plotting.output_file("chart.html", title=title)
         p = bokeh.plotting.figure(x_axis_type="datetime", plot_width=1000, plot_height=400, title=title)
         p.grid.grid_line_alpha = 0.3
         p.xaxis.axis_label = 'Date'
         p.yaxis.axis_label = 'Equity'
         shares = self.account.initial_capital/self.data.iloc[0]['open']
-        base_equity = [price*shares for price in self.data['open']]      
-        p.line(self.data['date'], base_equity, color='#CAD8DE', legend='Buy and Hold')
-        p.line(self.data['date'], self.account.equity, color='#49516F', legend='Strategy')
+        base_equity = [price*shares for price in self.data['open']]     
+        p.line(self.data['date'], base_equity, color='#CAD8DE', legend_label='Buy and Hold')
+        p.line(self.data['date'], self.account.equity, color='#49516F', legend_label='Strategy')
         p.legend.location = "top_left"
 
         if show_trades:
@@ -137,7 +147,8 @@ class backtest():
                     y = self.account.equity[np.where(self.data['date'] == trade.date.strftime("%Y-%m-%d"))[0][0]]
                     if trade.type_ == 'long': p.circle(x, y, size=6, color='green', alpha=0.5)
                     elif trade.type_ == 'short': p.circle(x, y, size=6, color='red', alpha=0.5)
-                except:
+                except Exception as e:
+                    print(e)
                     pass
 
             for trade in self.account.closed_trades:
@@ -148,5 +159,12 @@ class backtest():
                     elif trade.type_ == 'short': p.circle(x, y, size=6, color='orange', alpha=0.5)
                 except:
                     pass
-        
         bokeh.plotting.show(p)
+    
+    def plotlyplotting(self, show_trades=False, title="Equity Curve"):
+
+        import plotly.express as px
+
+        df = px.data.gapminder().query("country=='Canada'")
+        fig = px.line(df, x="year", y="lifeExp", title='Life expectancy in Canada')
+        fig.show()

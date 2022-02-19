@@ -1,16 +1,19 @@
 import pandas as pd
 import API_Interface as api
+import time
 
 # local imports
 from backtester import engine
 
 # read in data preserving dates
-# df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
+df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
 # df = api.get_intraday_extended('AAPL', 'all', '', '60min', True, False)
-df = api.get_intraday_extended('AAPL', 'year1month2', 'year1month1', '60min', True, False)
+# df = api.get_intraday_extended('TSLA', 'year1month2', 'year1month1', '60min', True, False)
+
+# df = pd.read_csv("data/AAPL_2020-03-01_2022-01-20_60min.csv")
 
 # globals
-training_period = 20
+training_period = 2
 
 #backtesting
 backtest = engine.backtest(df)
@@ -34,10 +37,12 @@ def logic(account, lookback):
                                 account.close_position(position, 1, lookback['close'][today]) 
     except Exception as e:
         print(e)
-    pass  # Handles lookback errors in beginning of dataset
+        pass  # Handles lookback errors in beginning of dataset
 
 
 if __name__ == "__main__":
     backtest.start(100, logic)
-    backtest.results()
+    # backtest.results()
     backtest.chart()
+    # backtest.plotlyplotting()
+    # plotlyplotting.chart()

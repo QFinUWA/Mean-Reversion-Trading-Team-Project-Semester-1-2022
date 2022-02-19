@@ -109,8 +109,9 @@ def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, 
         url = 'https://www.alphavantage.co/query?' + urlparse.urlencode(params)
 
         # Make the API call and save it to a dataframe.
-        df = pd.read_csv(url)#, index_col=0)
+        df = pd.read_csv(url, parse_dates=[0])#, index_col=0)
         df.rename({'time': 'date'}, inplace=True, axis=1)
+        # df['date']= pd.to_datetime(df['date'])
         if combine == True:
             combined_data = pd.concat([combined_data,df])
         else:
@@ -119,9 +120,10 @@ def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, 
     if combine == True:
         combined_data.reset_index()
         combined_data = combined_data.sort_values(by='date')
+        combined_data.reset_index(drop=True, inplace=True)
         # print(combined_data)
         if save == True:
-            combined_data.to_csv("data" + "/" + symbol + '_' + str(start_date.date()) + '_' + str(end_date.date()) + '_' +  interval + '.csv')
+            combined_data.to_csv("data" + "/" + symbol + '_' + str(start_date.date()) + '_' + str(end_date.date()) + '_' +  interval + '.csv', index=False)
         else:
             # print(combined_data)
             return combined_data
