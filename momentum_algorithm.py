@@ -6,9 +6,11 @@ import time
 from backtester import engine
 
 # read in data preserving dates
-df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
+# df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
 # df = api.get_intraday_extended('AAPL', 'all', '', '60min', True, False)
 # df = api.get_intraday_extended('TSLA', 'year1month2', 'year1month1', '60min', True, False)
+api.get_intraday_extended('TSLA', 'all', 'year1month1', '1min', True, True)
+df = pd.read_csv("data/TSLA_2021-12-21_2022-01-20_1min.csv")
 
 # df = pd.read_csv("data/AAPL_2020-03-01_2022-01-20_60min.csv")
 

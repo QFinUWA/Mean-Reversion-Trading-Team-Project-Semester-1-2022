@@ -38,7 +38,7 @@ class backtest():
         :return: A bactesting simulation
         :rtype: backtest
         """
-        self.tracker = []
+        # self.tracker = []
         self.account = account.Account(initial_capital)
         
         # Enter backtest ---------------------------------------------  
@@ -69,10 +69,10 @@ class backtest():
             self.account.equity.append(equity)
 
             # Equity tracking
-            self.tracker.append({'date': date, 
-                                 'benchmark_equity' : close,
-                                # 'benchmark_equity' : today['close'],
-                                 'strategy_equity' : equity})
+            # self.tracker.append({'date': date, 
+            #                      'benchmark_equity' : close,
+            #                     # 'benchmark_equity' : today['close'],
+            #                      'strategy_equity' : equity})
 
             # Execute trading logic
             lookback = self.data[0:_+1]
