@@ -122,11 +122,11 @@ def get_intraday_extended(symbol, start_date, end_date, interval, combine=True):
         combined_data.to_csv("data" + "/" + symbol + '_' + str(start_date.date()) + '_' + str(end_date.date()) + '_' +  interval + '.csv')
 
 # get_intraday_extended('IBM', '01-01-2008', '01-03-2022', '60min', True)
-get_intraday_extended('AAPL', 'year2month12', 'year1month1', '60min', True)
+# get_intraday_extended('AAPL', 'year2month12', 'year1month1', '60min', True)
 # get_intraday_extended('IBM', 'year2month12', 'year1month1', '60min', True)
 # get_intraday_extended('IBM', 'all', None, '60min', True)
-calculate_time_slice('01-01-2008', '01-03-2022')
-calculate_time_slice('01-01-2021', '01-03-2020')
+# calculate_time_slice('01-01-2008', '01-03-2022')
+# calculate_time_slice('01-01-2021', '01-03-2020')
 
 # print(calculate_time_slice('01-01-2019', '01-03-2018'))
 # get_intraday_extended('IBM', '01-01-2019', '01-03-2018', '1min', True)
