@@ -70,7 +70,7 @@ def calculate_time_slice(start_date, end_date): # Calculates the timeslices need
     end_date = str((today - relativedelta(months=monthsagoend)).date())
     return timeslicestart, timesliceend, start_date, end_date
 
-def get_intraday_extended(symbol, start_date, end_date, interval, combine=True): # Maybe rename if intraday is the only one used
+def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, save=True): # Maybe rename if intraday is the only one used
     with open('API_Key.txt') as f:
         apikey = f.readline()
     timeslicelist = [   "year2month12", "year2month11", "year2month10", "year2month9", "year2month8", "year2month7",
@@ -109,17 +109,23 @@ def get_intraday_extended(symbol, start_date, end_date, interval, combine=True):
         url = 'https://www.alphavantage.co/query?' + urlparse.urlencode(params)
 
         # Make the API call and save it to a dataframe.
-        df = pd.read_csv(url, index_col=0)
+        df = pd.read_csv(url)#, index_col=0)
+        df.rename({'time': 'date'}, inplace=True, axis=1)
         if combine == True:
             combined_data = pd.concat([combined_data,df])
         else:
-            print(df)
+            # print(df)
             df.to_csv("data" + "/" +symbol + '_' + timeslice + '_' + interval + '.csv')
     if combine == True:
         combined_data.reset_index()
-        combined_data = combined_data.sort_values(by='time')
+        combined_data = combined_data.sort_values(by='date')
         # print(combined_data)
-        combined_data.to_csv("data" + "/" + symbol + '_' + str(start_date.date()) + '_' + str(end_date.date()) + '_' +  interval + '.csv')
+        if save == True:
+            combined_data.to_csv("data" + "/" + symbol + '_' + str(start_date.date()) + '_' + str(end_date.date()) + '_' +  interval + '.csv')
+        else:
+            # print(combined_data)
+            return combined_data
+
 
 # get_intraday_extended('IBM', '01-01-2008', '01-03-2022', '60min', True)
 # get_intraday_extended('AAPL', 'year2month12', 'year1month1', '60min', True)

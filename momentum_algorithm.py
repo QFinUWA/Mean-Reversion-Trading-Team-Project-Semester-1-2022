@@ -1,11 +1,13 @@
 import pandas as pd
-# import API_Interface as api
+import API_Interface as api
 
 # local imports
 from backtester import engine
 
 # read in data preserving dates
-df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
+# df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
+# df = api.get_intraday_extended('AAPL', 'all', '', '60min', True, False)
+df = api.get_intraday_extended('AAPL', 'year1month2', 'year1month1', '60min', True, False)
 
 # globals
 training_period = 20

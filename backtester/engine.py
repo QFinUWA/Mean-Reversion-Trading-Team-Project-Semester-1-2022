@@ -5,7 +5,7 @@ import warnings
 import time
 
 # Local imorts
-from backtester import exchange, helpfuncs
+from backtester import account, helpfuncs
 
 class backtest():
     """An object representing a backtesting simulation."""
@@ -39,7 +39,7 @@ class backtest():
         :rtype: backtest
         """
         self.tracker = []
-        self.account = exchange.Account(initial_capital)
+        self.account = account.Account(initial_capital)
         
         # Enter backtest ---------------------------------------------  
         for index, today in self.data.iterrows():
