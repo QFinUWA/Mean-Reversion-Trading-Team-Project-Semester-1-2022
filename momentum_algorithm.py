@@ -45,7 +45,7 @@ def logic(account, lookback):
 list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP","USDT_DASH","USDT_NEO"]
 
 lock = mp.Lock()
-def backtest_stocck(results,stock,logic_function,logic):
+def backtest_stock(results,stock,logic):
     df = pd.read_csv("data/" + stock + ".csv", parse_dates=[0])
     backtest = engine.backtest(df)
     backtest.start(1000, logic)
@@ -64,8 +64,9 @@ if __name__ == "__main__":
     # plotlyplotting.chart()
     manager = mp.Manager()
     results = manager.list()
+    processes = []
     for coin in list_of_coins:
-        p = mp.Process(target=backtest_stock, args=(results,coin,LOGIC0,logic0))
+        p = mp.Process(target=backtest_stock, args=(results,coin,logic0))
         processes.append(p)
         p.start()
     for process in processes:
