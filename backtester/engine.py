@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import warnings
 import time
+import statistics
 
 # Local imorts
 from backtester import account, helpfuncs
@@ -100,13 +101,13 @@ class backtest():
         being_price = self.data.iloc[0]['open']
         final_price = self.data.iloc[-1]['close']
 
-        pc = helpfuncs.percent_change(being_price, final_price)
-        print("Buy and Hold : {0}%".format(round(pc*100, 2)))
-        print("Net Profit   : {0}".format(round(helpfuncs.profit(self.account.initial_capital, pc), 2)))
+        pc1 = helpfuncs.percent_change(being_price, final_price)
+        print("Buy and Hold : {0}%".format(round(pc1*100, 2)))
+        print("Net Profit   : {0}".format(round(helpfuncs.profit(self.account.initial_capital, pc1), 2)))
         
-        pc = helpfuncs.percent_change(self.account.initial_capital, self.account.total_value(final_price))
-        print("Strategy     : {0}%".format(round(pc*100, 2)))
-        print("Net Profit   : {0}".format(round(helpfuncs.profit(self.account.initial_capital, pc), 2)))
+        pc2 = helpfuncs.percent_change(self.account.initial_capital, self.account.total_value(final_price))
+        print("Strategy     : {0}%".format(round(pc2*100, 2)))
+        print("Net Profit   : {0}".format(round(helpfuncs.profit(self.account.initial_capital, pc2), 2)))
 
         longs  = len([t for t in self.account.opened_trades if t.type_ == 'long'])
         sells  = len([t for t in self.account.closed_trades if t.type_ == 'long'])
@@ -120,6 +121,7 @@ class backtest():
         print("--------------------")
         print("Total Trades : {0}".format(longs + sells + shorts + covers))
         print("\n---------------------------------------")
+        return [round(pc1*100, 2),round(pc2*100, 2),longs,sells,shorts,covers,statistics.stdev(self.account.equity),statistics.stdev([price*self.account.initial_capital/self.data.iloc[0]['open'] for price in self.data['open']]), ]
     
     def chart(self, show_trades=False, title="Equity Curve"):
         """Chart results.
