@@ -68,7 +68,7 @@ def wait_process_done(f, wait_time=0.001):
 
 if __name__ == "__main__":
 
-    backtest.start(100, logic)
+    # backtest.start(100, logic)
     # backtest.results()
     # backtest.chart()
     # backtest.plotlyplotting()
