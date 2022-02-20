@@ -42,33 +42,36 @@ def logic(account, lookback):
         print(e)
         pass  # Handles lookback errors in beginning of dataset
 
-list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP","USDT_DASH","USDT_NEO"]
+# list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP","USDT_DASH","USDT_NEO"]
 
-lock = mp.Lock()
-def backtest_stock(results,stock,logic):
-    df = pd.read_csv("data/" + stock + ".csv", parse_dates=[0])
-    backtest = engine.backtest(df)
-    backtest.start(1000, logic)
-    lock.acquire()
-    data = backtest.results()
-    data.extend([coin,logic_function.name,logic_function.volume_index,logic_function.price_index,logic_function.price_long_index]) #coinname
-    results.append(data)
-    lock.release()
+# lock = mp.Lock()
+# def backtest_stock(results,stock,logic):
+#     df = pd.read_csv("data/" + stock + ".csv", parse_dates=[0])
+#     backtest = engine.backtest(df)
+#     backtest.start(1000, logic)
+#     lock.acquire()
+#     data = backtest.results()
+#     data.extend([coin,logic_function.name,logic_function.volume_index,logic_function.price_index,logic_function.price_long_index]) #coinname
+#     results.append(data)
+#     lock.release()
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    backtest.start(100, logic)
-    # backtest.results()
-    backtest.chart()
-    # backtest.plotlyplotting()
-    # plotlyplotting.chart()
-    manager = mp.Manager()
-    results = manager.list()
-    processes = []
-    for coin in list_of_coins:
-        p = mp.Process(target=backtest_stock, args=(results,coin,logic0))
-        processes.append(p)
-        p.start()
-    for process in processes:
-        process.join()
-        processes.remove(process)
+#     backtest.start(100, logic)
+#     # backtest.results()
+#     backtest.chart()
+#     # backtest.plotlyplotting()
+#     # plotlyplotting.chart()
+#     manager = mp.Manager()
+#     results = manager.list()
+#     processes = []
+#     for coin in list_of_coins:
+#         p = mp.Process(target=backtest_stock, args=(results,coin,logic0))
+#         processes.append(p)
+#         p.start()
+#     for process in processes:
+#         process.join()
+#         processes.remove(process)
+
+#     df = DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin",'Strategy_Name','Volume_Window','Price_Window','Long_Price_Window'])
+#     df.to_csv("resultsbugtest.csv",index =False)
