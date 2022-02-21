@@ -45,6 +45,7 @@ def logic(account, lookback):
 
 list_of_coins = ["USDT_DOGE","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
 
+
 # lock = mp.Lock()
 # def backtest_stock(results,stock,logic):
 #     df = pd.read_csv("data/" + stock + ".csv", parse_dates=[0])
@@ -57,9 +58,10 @@ list_of_coins = ["USDT_DOGE","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
 #     lock.release()
 
 if __name__ == "__main__":
-    print(mp.cpu_count())
+    list_of_stocks = ["TSLA_2020-03-01_2022-01-20_1min.csv", "TSLA_2021-12-21_2022-01-20_60min.csv"]
+    cores = mp.cpu_count()-2 or 1
     starttime = time.time()
-    tester.testArr(list_of_coins, logic)
+    results = tester.testArr(list_of_stocks, logic, cores)
     print('That took {} seconds'.format(time.time() - starttime))
     # backtest.start(100, logic)
     # backtest.results()
@@ -79,9 +81,9 @@ if __name__ == "__main__":
     #     processes.remove(process)
     #     process.join()
         
-
-    # df = pd.DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin"])
-    # df.to_csv("resultsbugtest.csv",index =False)
-    # print('That took {} seconds'.format(time.time() - starttime))
+    print(results)
+    df = pd.DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin"])
+    df.to_csv("resultsbugtest.csv",index =False)
+    print('That took {} seconds'.format(time.time() - starttime))
 
     # Pass a list of strings containing file names to test to the backtest object
