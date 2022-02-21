@@ -4,7 +4,7 @@ import time
 import multiprocessing as mp
 
 # local imports
-from backtester import engine
+from backtester import engine, tester
 
 # read in data preserving dates
 df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
@@ -20,6 +20,7 @@ training_period = 2
 
 #backtesting
 backtest = engine.backtest(df) #IMPORTANT
+# backtest = engine.teststocks(arr)
 
 '''Algorithm function, lookback is a data frame parsed to function continuously until end of initial dataframe is reached.'''
 def logic(account, lookback):
@@ -44,39 +45,43 @@ def logic(account, lookback):
 
 list_of_coins = ["USDT_DOGE","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
 
-lock = mp.Lock()
-def backtest_stock(results,stock,logic):
-    df = pd.read_csv("data/" + stock + ".csv", parse_dates=[0])
-    backtest = engine.backtest(df)
-    backtest.start(1000, logic)
-    lock.acquire()
-    data = backtest.results()
-    data.extend([stock]) #coinname
-    results.append(data)
-    lock.release()
+# lock = mp.Lock()
+# def backtest_stock(results,stock,logic):
+#     df = pd.read_csv("data/" + stock + ".csv", parse_dates=[0])
+#     backtest = engine.backtest(df)
+#     backtest.start(1000, logic)
+#     lock.acquire()
+#     data = backtest.results()
+#     data.extend([stock]) #coinname
+#     results.append(data)
+#     lock.release()
 
 if __name__ == "__main__":
-
+    print(mp.cpu_count())
+    starttime = time.time()
+    tester.testArr(list_of_coins, logic)
+    print('That took {} seconds'.format(time.time() - starttime))
     # backtest.start(100, logic)
     # backtest.results()
     # backtest.chart()
     # backtest.plotlyplotting()
     # plotlyplotting.chart()
-    manager = mp.Manager()
-    results = manager.list()
-    processes = []
-    starttime = time.time()
-    for coin in list_of_coins:
-        p = mp.Process(target=backtest_stock, args=(results,coin,logic))
-        processes.append(p)
-        p.start()
-    for process in processes:
-        processes.remove(process)
-        process.join()
+
+    # manager = mp.Manager()
+    # results = manager.list()
+    # processes = []
+    # starttime = time.time()
+    # for coin in list_of_coins:
+    #     p = mp.Process(target=backtest_stock, args=(results,coin,logic))
+    #     processes.append(p)
+    #     p.start()
+    # for process in processes:
+    #     processes.remove(process)
+    #     process.join()
         
 
-    df = pd.DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin"])
-    df.to_csv("resultsbugtest.csv",index =False)
-    print('That took {} seconds'.format(time.time() - starttime))
+    # df = pd.DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin"])
+    # df.to_csv("resultsbugtest.csv",index =False)
+    # print('That took {} seconds'.format(time.time() - starttime))
 
     # Pass a list of strings containing file names to test to the backtest object
