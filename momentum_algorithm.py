@@ -55,17 +55,6 @@ def backtest_stock(results,stock,logic):
     results.append(data)
     lock.release()
 
-def wait_process_done(f, wait_time=0.001):
-    # Monitor the status of another process 
-    if not f.is_alive():
-        time.sleep(1)
-    print('foo is done.')
-
-# if __name__ == '__main__':
-#     p = Process(target=foo, args=('foo',))
-#     p.start()
-#     wait_process_done(p)
-
 if __name__ == "__main__":
 
     # backtest.start(100, logic)
@@ -89,3 +78,5 @@ if __name__ == "__main__":
     df = pd.DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin"])
     df.to_csv("resultsbugtest.csv",index =False)
     print('That took {} seconds'.format(time.time() - starttime))
+
+    # Pass a list of strings containing file names to test to the backtest object

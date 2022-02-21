@@ -47,42 +47,25 @@ class backtest():
         # for index, today in self.data.iterrows():
         # print(self.data)
         
-        for (_,date,low,high,open,close,volume) in self.data.itertuples():
+        for (index,date,low,high,open,close,volume) in self.data.itertuples():
             # print(date,low,high,open,close,volume)
             
-            # date = today['date']
             equity = self.account.total_value(close)
-            # equity = self.account.total_value(today['close'])
 
-            # Handle stop loss
-            # for p in self.account.positions:
-            #     if p.type_ == "long":
-            #         if p.stop_loss >= (today['low']):
-            #             self.account.close_position(p, 1.0, today['low'])
-            #     if p.type_ == "short":
-            #         if p.stop_loss <= today['high']:
-            #             self.account.close_position(p, 1.0, today['high'])
-
-            self.account.purge_positions()
+            # self.account.purge_positions()
 
             # Update account variables
             self.account.date = date
             self.account.equity.append(equity)
 
-            # Equity tracking
-            # self.tracker.append({'date': date, 
-            #                      'benchmark_equity' : close,
-            #                     # 'benchmark_equity' : today['close'],
-            #                      'strategy_equity' : equity})
-
             # Execute trading logic
-            lookback = self.data[0:_+1]
-            # lookback = self.data[0:index+1]
+            lookback = self.data[0:index+1]
 
             logic(self.account, lookback)
 
             # Cleanup empty positions
             self.account.purge_positions()
+
         print("Backtest completed in {0} seconds".format(time.time() - starttime))
             
         # ------------------------------------------------------------
