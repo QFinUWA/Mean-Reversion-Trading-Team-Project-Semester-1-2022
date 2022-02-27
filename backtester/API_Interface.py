@@ -27,24 +27,25 @@ Output:
     Dataframe of requested data
 
 '''
+timeslicelist = [   "year2month12", "year2month11", "year2month10", "year2month9", "year2month8", "year2month7",
+                        "year2month6", "year2month5", "year2month4", "year2month3", "year2month2", "year2month1",
+                        "year1month12", "year1month11", "year1month10", "year1month9", "year1month8", "year1month7",
+                        "year1month6", "year1month5", "year1month4", "year1month3", "year1month2", "year1month1"]
+
 def calculate_time_slice(start_date, end_date): # Calculates the timeslices needed for the start and end dates provided
 
     start_datetime_object = datetime.strptime(start_date, '%d-%m-%Y') # Creates datetime object from start date
     end_datetime_object = datetime.strptime(end_date, '%d-%m-%Y') # Creates datetime object from end date
     if start_datetime_object > end_datetime_object: # If start date is after end date, swap them
-        temp = start_datetime_object
-        start_datetime_object = end_datetime_object
-        end_datetime_object = temp
-        temp = start_date
-        start_date = end_date
-        end_date = temp
+        start_datetime_object, end_datetime_object = end_datetime_object, start_datetime_object # swaps the objects
+        start_date, end_date = end_date, start_date # swaps the dates
     
     today = datetime.combine(date.today(), datetime.min.time()) # Creates datetime object for today
     monthsagostart = (today - start_datetime_object).days // 30 # Calculates the number of months between today and start date
     if monthsagostart < 1: # If start date is before today, set start date to today
         monthsagostart = 0
         timeslicestart = "year1month1"
-    elif monthsagostart >= 24: 
+    elif monthsagostart >= 24: # If start date is more than 2 years ago, set to 2 years ago
         monthsagostart = 24
         timeslicestart = "year2month12"
     else:
@@ -70,13 +71,7 @@ def calculate_time_slice(start_date, end_date): # Calculates the timeslices need
     end_date = str((today - relativedelta(months=monthsagoend)).date())
     return timeslicestart, timesliceend, start_date, end_date
 
-def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, save=True): # Maybe rename if intraday is the only one used
-    with open('API_Key.txt') as f:
-        apikey = f.readline()
-    timeslicelist = [   "year2month12", "year2month11", "year2month10", "year2month9", "year2month8", "year2month7",
-                        "year2month6", "year2month5", "year2month4", "year2month3", "year2month2", "year2month1",
-                        "year1month12", "year1month11", "year1month10", "year1month9", "year1month8", "year1month7",
-                        "year1month6", "year1month5", "year1month4", "year1month3", "year1month2", "year1month1"]
+def time_controller(start_date, end_date):
     if start_date == "all":
         start_date = "year2month12"
         end_date = "year1month1"
@@ -88,7 +83,15 @@ def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, 
         timeslicestart, timesliceend, start_date, end_date = calculate_time_slice(start_date, end_date)
     startindex = timeslicelist.index(timeslicestart)
     endindex = timeslicelist.index(timesliceend)
+    return startindex, endindex, start_date, end_date
+
+def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, save=True): # Maybe rename if intraday is the only one used
+    with open('API_Key.txt') as f:
+        apikey = f.readline()
+    
     combined_data = pd.DataFrame()
+
+    startindex, endindex, start_date, end_date = time_controller(start_date, end_date)
 
     for i in range(startindex, endindex + 1):
         timeslice = timeslicelist[i]

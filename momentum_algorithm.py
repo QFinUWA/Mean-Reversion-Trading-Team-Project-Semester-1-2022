@@ -1,25 +1,27 @@
 import pandas as pd
-import API_Interface as api
+# import backtester.API_Interface as api
 import time
 import multiprocessing as mp
 
 # local imports
 from backtester import engine, tester
+from backtester import API_Interface as api
 
 # read in data preserving dates
-df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
+# df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
 # df = api.get_intraday_extended('AAPL', 'all', '', '60min', True, False)
 # df = api.get_intraday_extended('TSLA', 'year1month2', 'year1month1', '60min', True, False)
-# api.get_intraday_extended('TSLA', 'all', 'year1month1', '1min', True, True)
+# api.get_intraday_extended('TSLA', 'all', 'year1month1', '15min', True, True)
 # df = pd.read_csv("data/TSLA_2021-12-21_2022-01-20_1min.csv")
 
 # df = pd.read_csv("data/AAPL_2020-03-01_2022-01-20_60min.csv")
+print("test")
 
 # globals
 training_period = 2
 
 #backtesting
-backtest = engine.backtest(df) #IMPORTANT
+# backtest = engine.backtest(df) #IMPORTANT
 # backtest = engine.teststocks(arr)
 
 '''Algorithm function, lookback is a data frame parsed to function continuously until end of initial dataframe is reached.'''
@@ -58,7 +60,7 @@ list_of_coins = ["USDT_DOGE","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
 #     lock.release()
 
 if __name__ == "__main__":
-    list_of_stocks = ["TSLA_2020-03-01_2022-01-20_1min.csv", "TSLA_2021-12-21_2022-01-20_60min.csv"]
+    list_of_stocks = ["TSLA_2020-03-01_2022-01-20_1min"]
     cores = mp.cpu_count()-2 or 1
     starttime = time.time()
     results = tester.testArr(list_of_stocks, logic, cores)

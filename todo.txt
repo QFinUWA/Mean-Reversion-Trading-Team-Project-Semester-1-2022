@@ -1,5 +1,5 @@
 multiprocessing
 
-portfolio
+make killable
 
-mutliple stocks at the same time
+stop from calling whole python file
