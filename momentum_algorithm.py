@@ -15,7 +15,7 @@ from backtester import API_Interface as api
 # df = pd.read_csv("data/TSLA_2021-12-21_2022-01-20_1min.csv")
 
 # df = pd.read_csv("data/AAPL_2020-03-01_2022-01-20_60min.csv")
-print("test")
+# print("test")
 
 # globals
 training_period = 2
@@ -60,11 +60,12 @@ list_of_coins = ["USDT_DOGE","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
 #     lock.release()
 
 if __name__ == "__main__":
-    list_of_stocks = ["TSLA_2020-03-01_2022-01-20_1min"]
+    # list_of_stocks = ["TSLA_2021-12-21_2022-01-20_60min"]
+    list_of_stocks = ["TSLA_2020-03-09_2022-01-28_15min"]
     cores = mp.cpu_count()-2 or 1
     starttime = time.time()
     results = tester.testArr(list_of_stocks, logic, cores)
-    print('That took {} seconds'.format(time.time() - starttime))
+    # print('That took {} seconds'.format(time.time() - starttime))
     # backtest.start(100, logic)
     # backtest.results()
     # backtest.chart()

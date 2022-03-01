@@ -23,8 +23,10 @@ def backtest_stock(stock, logic):
 #             logic - the logic function to be used
 #             cores - the number of cores to be used
 def testArr(arr, logic, cores):
-    pool = mp.Pool(cores) # Create a multiprocessing pool with the specified number of cores
+    usedCores = min(len(arr), cores) # Only use number of cores required to do all tests, no need to create extra processes
+    pool = mp.Pool(usedCores) # Create a multiprocessing pool with the specified number of cores
     stocktest = partial(backtest_stock, logic=logic) # Create a partial function to be used in the pool
     results = pool.map_async(stocktest, iterable=arr) # Map the partial function to the pool, returning the results
+    pool.terminate()
     # print(results)
     return results.get() # Return the results
