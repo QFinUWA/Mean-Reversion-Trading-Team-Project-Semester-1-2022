@@ -1,37 +1,29 @@
-# from re import A
-# import requests
 import pandas as pd
 import urllib.parse as urlparse
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 
-'''
-Should take input of a number of parameters and save a csv file of the requested data, AND return a dataframe of the data if applicable
-
-Inputs:
-    Stock symbol (or name?)
-    Start date
-    End date
-    Time interval
-    combine: True or False, combine all data into one csv/dataframe
-    (API key?)
-    (Maybe allow other functions, not just Intraday Extended? Would require other functions)
-
-Calculations:
-    Calculate which slices required to get the data
-    Create a API call URL for each slice (May have to consider call limits? Maybe not if we get an academic key) - Function
-    Loop through and append slices to a single file
-    
-Output:
-    CSV file of requested data (custom name depending on inputs)
-    Dataframe of requested data
-
-'''
+# List of timeslices in order to allow easy iteration
 timeslicelist = [   "year2month12", "year2month11", "year2month10", "year2month9", "year2month8", "year2month7",
                         "year2month6", "year2month5", "year2month4", "year2month3", "year2month2", "year2month1",
                         "year1month12", "year1month11", "year1month10", "year1month9", "year1month8", "year1month7",
                         "year1month6", "year1month5", "year1month4", "year1month3", "year1month2", "year1month1"]
+'''
+Calculate_time_slice() function:
+    Context:    Alpha Vantage API stores intraday_extended data as slices for each month, and a month is 30 days from todays date, 
+                for example, year1month1 is the last 30 days, year1month2 is the 30 days before that. The correct slices must be calculated for the users input to return the correct data.
 
+    Calculates the timeslices needed for the start and end dates provided.
+
+    Input:  start_date: the starting date for the range of dates to be returned
+            end_date: the ending date for the range of dates to be returned
+    
+    Output: timeslicestart: the starting timeslice for the range of dates to be returned
+            timesliceend: the ending timeslice for the range of dates to be returned
+            start_date: the starting date for the range of dates to be returned (this may be different to the input if the input is not valid)
+            end_date: the ending date for the range of dates to be returned (this may be different to the input if the input is not valid)
+
+'''
 def calculate_time_slice(start_date, end_date): # Calculates the timeslices needed for the start and end dates provided
 
     start_datetime_object = datetime.strptime(start_date, '%d-%m-%Y') # Creates datetime object from start date
@@ -71,6 +63,19 @@ def calculate_time_slice(start_date, end_date): # Calculates the timeslices need
     end_date = str((today - relativedelta(months=monthsagoend)).date())
     return timeslicestart, timesliceend, start_date, end_date
 
+'''
+time_controller() function:
+    Context: Used to determine the timeslices needed for the start and end dates provided. May call calculate_time_slice() function.
+
+    Input:  start_date: the starting date for the range of dates to be returned
+            end_date: the ending date for the range of dates to be returned
+    
+    Output: startindex: the index of the starting timeslice, used to iterate over the timeslicelist data structure
+            endindex: the index of the ending timeslice, used to iterate over the timeslicelist data structure
+            start_date: the starting date for the range of dates to be returned (this may be different to the input if the input is not valid)
+            end_date: the ending date for the range of dates to be returned (this may be different to the input if the input is not valid)
+
+'''
 def time_controller(start_date, end_date):
     if start_date == "all":
         start_date = "year2month12"
@@ -85,13 +90,31 @@ def time_controller(start_date, end_date):
     endindex = timeslicelist.index(timesliceend)
     return startindex, endindex, start_date, end_date
 
+'''
+get_intraday_extended() function:
+    Context: Used to get intraday_extended data from Alpha Vantage API.
+
+    Requires: API_Key.txt located in the root folder, Access to the internet
+
+    Input:  symbol: the stock symbol to be returned
+            start_date: the starting date for the range of dates to be returned
+            end_date: the ending date for the range of dates to be returned
+            interval: the interval of the data to be returned (1min, 5min, 15min, 30min, 60min)
+            combine: whether to combine the data into one dataframe or not, if not, saves each timeslice as it's own csv
+            save: whether to save the data to a csv file or to return the dataframe (will not be saved locally)
+
+    Output: data: the dataframe containing the intraday_extended data
+            OR
+            data/SYMBOL_STARTDATE_ENDDATE_INTERVAL.csv: the csv file containing the intraday_extended data
+'''
+
 def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, save=True): # Maybe rename if intraday is the only one used
-    with open('API_Key.txt') as f:
+    with open('API_Key.txt') as f: # Reads API key from API_Key.txt
         apikey = f.readline()
     
     combined_data = pd.DataFrame()
 
-    startindex, endindex, start_date, end_date = time_controller(start_date, end_date)
+    startindex, endindex, start_date, end_date = time_controller(start_date, end_date) # Generate start and end index for retrieving data
 
     for i in range(startindex, endindex + 1):
         timeslice = timeslicelist[i]
@@ -104,7 +127,7 @@ def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, 
             'interval': interval, # allowed = 1min, 5min, 15min, 30min, 60min
             'outputsize': 'full',
             'datatype': 'csv',
-            'adjusted': 'true',
+            'adjusted': 'true', # Leave as true to adjust for stock splits in historical data
             "slice": timeslice,
             'apikey': apikey # TODO change to require input from user
         }
@@ -112,23 +135,21 @@ def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, 
         url = 'https://www.alphavantage.co/query?' + urlparse.urlencode(params)
 
         # Make the API call and save it to a dataframe.
-        df = pd.read_csv(url, parse_dates=[0])#, index_col=0)
+        df = pd.read_csv(url, parse_dates=[0])
         df.rename({'time': 'date'}, inplace=True, axis=1)
-        # df['date']= pd.to_datetime(df['date'])
+
         if combine == True:
-            combined_data = pd.concat([combined_data,df])
+            combined_data = pd.concat([combined_data,df]) # Keep combining all into one dataframe if combine == True
         else:
-            # print(df)
-            df.to_csv("data" + "/" +symbol + '_' + timeslice + '_' + interval + '.csv')
+            df.to_csv("data" + "/" +symbol + '_' + timeslice + '_' + interval + '.csv') # Save each timeslice as a csv file if combine == False
     if combine == True:
         combined_data.reset_index()
         combined_data = combined_data.sort_values(by='date')
         combined_data.reset_index(drop=True, inplace=True)
-        # print(combined_data)
+
         if save == True:
             combined_data.to_csv("data" + "/" + symbol + '_' + str(start_date.date()) + '_' + str(end_date.date()) + '_' +  interval + '.csv', index=False)
         else:
-            # print(combined_data)
             return combined_data
 
 
