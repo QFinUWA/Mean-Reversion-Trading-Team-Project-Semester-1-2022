@@ -1,5 +1,3 @@
-multiprocessing
-
-make killable
-
-stop from calling whole python file
+Actually write mean reversion example,
+Which to use?
+Bollinger, RSI, Standard Deviation

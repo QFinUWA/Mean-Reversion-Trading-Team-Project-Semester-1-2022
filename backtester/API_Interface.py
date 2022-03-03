@@ -101,14 +101,13 @@ get_intraday_extended() function:
             end_date: the ending date for the range of dates to be returned
             interval: the interval of the data to be returned (1min, 5min, 15min, 30min, 60min)
             combine: whether to combine the data into one dataframe or not, if not, saves each timeslice as it's own csv
-            save: whether to save the data to a csv file or to return the dataframe (will not be saved locally)
 
     Output: data: the dataframe containing the intraday_extended data
             OR
             data/SYMBOL_STARTDATE_ENDDATE_INTERVAL.csv: the csv file containing the intraday_extended data
 '''
 
-def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, save=True): # Maybe rename if intraday is the only one used
+def get_intraday_extended(symbol, start_date, end_date, interval, combine=True): # Maybe rename if intraday is the only one used
     try:
         with open('API_Key.txt') as f: # Reads API key from API_Key.txt
             apikey = f.readline()
@@ -150,11 +149,7 @@ def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, 
         combined_data.reset_index()
         combined_data = combined_data.sort_values(by='date')
         combined_data.reset_index(drop=True, inplace=True)
-
-        if save == True:
-            combined_data.to_csv("data" + "/" + symbol + '_' + str(start_date.date()) + '_' + str(end_date.date()) + '_' +  interval + '.csv', index=False)
-        else:
-            return combined_data
+        combined_data.to_csv("data" + "/" + symbol + '_' + str(start_date.date()) + '_' + str(end_date.date()) + '_' +  interval + '.csv', index=False)
 
 
 # get_intraday_extended('IBM', '01-01-2008', '01-03-2022', '60min', True)
