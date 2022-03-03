@@ -4,11 +4,11 @@ import multiprocessing as mp
 
 # local imports
 from backtester import engine, tester
-from backtester import API_Interface as api
+from backtester import api_interface as api
 
-training_period = 2
 
 def logic(account, lookback): # Logic function to be used for each time interval in backtest 
+    training_period = 2
     try:
         today = len(lookback)-1
         if(today > training_period): 

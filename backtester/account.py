@@ -1,5 +1,5 @@
 
-from backtester.helpfuncs import rnd
+from backtester.help_funcs import rnd
 
 FEES = 0
 

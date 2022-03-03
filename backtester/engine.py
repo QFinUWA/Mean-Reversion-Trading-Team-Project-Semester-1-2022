@@ -6,7 +6,7 @@ import time
 import statistics
 
 # Local imorts
-from backtester import account, helpfuncs
+from backtester import account, help_funcs
 
 class backtest():
     """An object representing a backtesting simulation."""
@@ -74,13 +74,13 @@ class backtest():
         being_price = self.data.iloc[0]['open']
         final_price = self.data.iloc[-1]['close']
 
-        pc1 = helpfuncs.percent_change(being_price, final_price)
+        pc1 = help_funcs.percent_change(being_price, final_price)
         print("Buy and Hold : {0}%".format(round(pc1*100, 2)))
-        print("Net Profit   : {0}".format(round(helpfuncs.profit(self.account.initial_capital, pc1), 2)))
+        print("Net Profit   : {0}".format(round(help_funcs.profit(self.account.initial_capital, pc1), 2)))
         
-        pc2 = helpfuncs.percent_change(self.account.initial_capital, self.account.total_value(final_price))
+        pc2 = help_funcs.percent_change(self.account.initial_capital, self.account.total_value(final_price))
         print("Strategy     : {0}%".format(round(pc2*100, 2)))
-        print("Net Profit   : {0}".format(round(helpfuncs.profit(self.account.initial_capital, pc2), 2)))
+        print("Net Profit   : {0}".format(round(help_funcs.profit(self.account.initial_capital, pc2), 2)))
 
         longs  = len([t for t in self.account.opened_trades if t.type_ == 'long'])
         sells  = len([t for t in self.account.closed_trades if t.type_ == 'long'])
