@@ -30,12 +30,12 @@ def logic(account, lookback): # Logic function to be used for each time interval
 
 
 if __name__ == "__main__":
-    list_of_stocks = ["TSLA_2020-03-01_2022-01-20_1min"] # List of stock data csv's to be tested, located in data/ folder
-    cores = mp.cpu_count()-2 or 1 # Number of cores/processes to use for backtest, set to 2 less than your computer has, or 1 if you don't have enough cores, can be overwritten to use all cores (not recommended)
+    # list_of_stocks = ["TSLA_2020-03-01_2022-01-20_1min"] 
+    list_of_stocks = ["TSLA_2021-12-21_2022-01-20_60min", "TSLA_2021-12-21_2022-01-20_60min", "TSLA_2021-12-21_2022-01-20_60min"] # List of stock data csv's to be tested, located in "data/" folder 
     starttime = time.time() # Start timer
-    results = tester.testArr(list_of_stocks, logic, cores) # Run backtest
+    results = tester.testArr(list_of_stocks, logic) # Run backtest on list of stocks using the logic function
 
     print(results) # Print results
     df = pd.DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin"]) # Create dataframe of results
-    df.to_csv("resultsbugtest.csv",index =False) # Save results to csv
-    print('That took {} seconds'.format(time.time() - starttime)) # Print time taken to run backtest
+    df.to_csv("resultsoftesting.csv",index =False) # Save results to csv
+    # print('That took {} seconds'.format(time.time() - starttime)) # Print time taken to run backtest

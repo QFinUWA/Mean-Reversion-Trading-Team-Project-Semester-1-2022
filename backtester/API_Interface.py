@@ -109,8 +109,12 @@ get_intraday_extended() function:
 '''
 
 def get_intraday_extended(symbol, start_date, end_date, interval, combine=True, save=True): # Maybe rename if intraday is the only one used
-    with open('API_Key.txt') as f: # Reads API key from API_Key.txt
-        apikey = f.readline()
+    try:
+        with open('API_Key.txt') as f: # Reads API key from API_Key.txt
+            apikey = f.readline()
+    except FileNotFoundError:
+        print("API Key not found, Please contact the Director of Trading for the key.")
+        return None
     
     combined_data = pd.DataFrame()
 
