@@ -45,9 +45,12 @@ class backtest():
         # Enter backtest ---------------------------------------------  
         starttime = time.time()
         
-        for (index,date,low,high,open,close,volume) in self.data.itertuples(): # Itertuples is faster than iterrows
+        # for (index,date,low,high,open,close,volume) in self.data.itertuples(): # Itertuples is faster than iterrows
+        for index, today in self.data.iterrows():
             
-            equity = self.account.total_value(close)
+            # equity = self.account.total_value(close)
+            date = today["date"]
+            equity = self.account.total_value(today['close'])
 
             # Update account variables
             self.account.date = date

@@ -5,7 +5,7 @@ import multiprocessing as mp
 
 # local imports
 from backtester import engine, tester
-from backtester import api_interface as api
+from backtester import API_Interface as api
 
 # read in data preserving dates
 # df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
