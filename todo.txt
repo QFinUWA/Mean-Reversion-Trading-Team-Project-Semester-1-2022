@@ -1,3 +1,0 @@
-Actually write mean reversion example,
-Which to use?
-Bollinger, RSI, Standard Deviation
