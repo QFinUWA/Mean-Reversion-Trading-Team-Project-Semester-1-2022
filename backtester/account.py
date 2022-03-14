@@ -1,7 +1,7 @@
 
 from backtester.help_funcs import rnd
 
-FEES = 0.001
+FEES = 0
 
 
 class OpenedTrade:

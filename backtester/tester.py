@@ -15,18 +15,18 @@ def backtest_stock(results, stock, logic, chart):
     backtest.start(1000, logic) # Start the backtest with the provided logic function
     lock.acquire()
     data = backtest.results() # Get the results of the backtest
+    if chart == True:
+        backtest.chart() # Chart the results
     data.extend([stock]) # Add the stock name to the results for easy comparison
     results.append(data) # Add the results to the list of results
     lock.release()
-    if chart == True:
-        backtest.chart() # Chart the results
     return data # Return the results
 
 # Function used to test an array of stocks
 # Parameters: arr - the array of stock data csv's to be tested
 #             logic - the logic function to be used
 
-def testArr(arr, logic, chart):
+def test_array(arr, logic, chart):
     manager = mp.Manager() # Create a multiprocessing manager
     results = manager.list() # Create a list to store the results
     processes = [] 

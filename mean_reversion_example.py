@@ -14,16 +14,14 @@ def logic(account, lookback): # Logic function to be used for each time interval
     try:
         today = len(lookback)-1
         if(today > training_period):
-            # If df['BUY'] is True, buy/cover stock
-            if(lookback['BUY'][today]):
+            if(lookback['close'][today] < lookback['BOLD'][today]): # If current price is below lower Bollinger Band, enter a long position
                 for position in account.positions:
-                    account.close_position(position, 1, lookback['close'][today])
+                    account.close_position(position, 1, lookback['close'][today] - 10)
                 if(account.buying_power > 0):
-                    account.enter_position('long', account.buying_power, lookback['close'][today])
-            # If df['SELL'] is True, sell/short stock
-            if(lookback['SELL'][today]):
+                    account.enter_position('long', account.buying_power, lookback['close'][today]) 
+            if(lookback['close'][today] > lookback['BOLU'][today]): # If today's price is above the upper Bollinger Band, enter a short position
                 for position in account.positions:
-                    account.close_position(position, 1, lookback['close'][today])
+                    account.close_position(position, 1, lookback['close'][today] - 10)
                 if(account.buying_power > 0):
                     account.enter_position('short', account.buying_power, lookback['close'][today])
     except Exception as e:
@@ -39,8 +37,6 @@ def preprocess_data(list_of_stocks):
         df['MA-TP'] = df['TP'].rolling(training_period).mean() # Calculate Moving Average of Typical Price
         df['BOLU'] = df['MA-TP'] + standard_deviations*df['std'] # Calculate Upper Bollinger Band
         df['BOLD'] = df['MA-TP'] - standard_deviations*df['std'] # Calculate Lower Bollinger Band
-        df["BUY"] = df['close'].gt(df['BOLU']) # Calculate if price is above upper band
-        df["SELL"] = df['close'].lt(df['BOLD']) # Calculate if price is below lower band
         df.to_csv("data/" + stock + "_Processed.csv", index=False) # Save to CSV
         list_of_stocks_processed.append(stock + "_Processed")
     return list_of_stocks_processed
