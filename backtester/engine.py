@@ -104,7 +104,7 @@ class backtest():
         :param title: Plot title
         :type title: str
         """
-        bokeh.plotting.output_file("chart.html", title=title)
+        bokeh.plotting.output_file("results/" + title + ".html", title=title)
         p = bokeh.plotting.figure(x_axis_type="datetime", plot_width=1000, plot_height=400, title=title)
         p.grid.grid_line_alpha = 0.3
         p.xaxis.axis_label = 'Date'

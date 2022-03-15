@@ -1,7 +1,7 @@
 
 from backtester.help_funcs import rnd
 
-FEES = 0.00
+FEES = 0.001
 
 
 class OpenedTrade:
@@ -210,8 +210,7 @@ class Account:
         else:
             # get trade fee
             # FIXME Use type by direction: buy-Long, sell-Short
-            trade_fee = rnd(
-                price * position.shares * self.fee)
+            trade_fee = min(rnd(price * position.shares * self.fee), 10)
             # trade_fee += 10
             # print(trade_fee)
 

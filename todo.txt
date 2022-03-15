@@ -1,2 +1,0 @@
-Flat rate fee
-create ok example

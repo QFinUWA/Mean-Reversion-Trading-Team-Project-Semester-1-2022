@@ -15,10 +15,10 @@ def backtest_stock(results, stock, logic, chart):
     backtest.start(1000, logic) # Start the backtest with the provided logic function
     lock.acquire()
     data = backtest.results() # Get the results of the backtest
-    if chart == True:
-        backtest.chart() # Chart the results
     data.extend([stock]) # Add the stock name to the results for easy comparison
     results.append(data) # Add the results to the list of results
+    if chart == True:
+        backtest.chart(title=stock + "_results") # Chart the results
     lock.release()
     return data # Return the results
 
