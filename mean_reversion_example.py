@@ -15,15 +15,15 @@ def logic(account, lookback): # Logic function to be used for each time interval
         today = len(lookback)-1
         if(today > training_period):
             if(lookback['close'][today] < lookback['BOLD'][today]): # If current price is below lower Bollinger Band, enter a long position
-                for position in account.positions:
-                    account.close_position(position, 1, lookback['close'][today] - 10)
+                for position in account.positions: # Close all current positions
+                    account.close_position(position, 1, lookback['close'][today])
                 if(account.buying_power > 0):
-                    account.enter_position('long', account.buying_power, lookback['close'][today]) 
+                    account.enter_position('long', account.buying_power, lookback['close'][today]) # Enter a long position
             if(lookback['close'][today] > lookback['BOLU'][today]): # If today's price is above the upper Bollinger Band, enter a short position
-                for position in account.positions:
-                    account.close_position(position, 1, lookback['close'][today] - 10)
+                for position in account.positions: # Close all current positions
+                    account.close_position(position, 1, lookback['close'][today])
                 if(account.buying_power > 0):
-                    account.enter_position('short', account.buying_power, lookback['close'][today])
+                    account.enter_position('short', account.buying_power, lookback['close'][today]) # Enter a short position
     except Exception as e:
         print(e)
         pass  # Handles lookback errors in beginning of dataset
@@ -51,6 +51,6 @@ if __name__ == "__main__":
     print("training period " + str(training_period))
     print("standard deviations " + str(standard_deviations))
     print(results) # Print results
-    df = pd.DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin"]) # Create dataframe of results
-    df.to_csv("resultsoftesting.csv",index =False) # Save results to csv
+    df = pd.DataFrame(list(results), columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin"]) # Create dataframe of results
+    df.to_csv("resultsoftesting.csv", index=False) # Save results to csv
     # print('That took {} seconds'.format(time.time() - starttime)) # Print time taken to run backtest
