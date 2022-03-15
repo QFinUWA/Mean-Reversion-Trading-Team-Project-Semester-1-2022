@@ -166,7 +166,7 @@ class Account:
             pos_amount = rnd(entry_price * size)
 
             # calculate trading fee for position
-            trade_fee = rnd(pos_amount * self.fee)
+            trade_fee = min(rnd(pos_amount * self.fee), 10)
             # calc buying power
             self.buying_power -= pos_amount + trade_fee
 
