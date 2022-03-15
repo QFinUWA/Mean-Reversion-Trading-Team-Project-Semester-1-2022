@@ -1,5 +1,0 @@
-multiprocessing
-
-portfolio
-
-mutliple stocks at the same time
