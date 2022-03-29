@@ -26,3 +26,7 @@ Useful Resources:
   - https://www.youtube.com/watch?v=IK7pnQW20M4&ab_channel=FinancialSource
   - https://www.youtube.com/watch?v=9yTrfhvJhUw&ab_channel=CriticalTrading
   - https://www.youtube.com/watch?v=0PfgqNYTl4Q&ab_channel=MattMacarty
+
+Project designed and developed by The 2022 Director of Trading, [Jake Lyell][jakegithub]
+
+[jakegithub]: https://github.com/JakeLDev
